@@ -1,75 +1,69 @@
 #!/usr/bin/env python3
 from pwn import *
+import tempfile
+import os
 
-args = ['build/hackvm', '--trace', 'build/puzzle1']
+def spawn():
+    f = tempfile.TemporaryFile('wb')
+    args = ['build/hackvm', '--trace', 'build/puzzle1']
+    p = process(args, stderr=f)
+    return p, f
 
-def discover_password(length, initial_count):
-    password = ['X']*length
-    best_count = initial_count
+def assemble(arr):
+    return "".join(arr)
 
-    with log.progress("password") as l:
+def get_side_channel_leakage(payload):
+    context.log_level = 'error'
+    p, f = spawn()
+    p.recvuntil(b"please enter passphrase: ")
+    p.sendline(payload.encode())
+    p.recvall()
+    p.close()
+    context.log_level = 'info'
+    w = os.fstat(f.fileno()).st_size
+    f.close()
+
+    return w
+
+def discover_password(length):
+    payload = ["X"]*length
+    best = get_side_channel_leakage(assemble(payload))
+
+    with log.progress("Finding password contents") as l:
         for i in range(length):
-            best_ch = 'X'
+            for ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz{}_0123456789":
+                payload[i] = ch
+                l.status(f"trying {assemble(payload)}")
+                nbytes = get_side_channel_leakage(assemble(payload))
 
-            for ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789":
-                password[i] = ch
-                l.status(f"trying {''.join(password)}")
-                
-                count = 0
-                context.log_level = 'error'
-                p = process(args)
-
-                buf = p.recvuntil(b'syscall=0x0000003f, a0=0x00000000, a1=0x87ffff2f, a2=0x00000001')
-                count += len(buf)
-
-                p.sendline("".join(password).encode())
-
-                buf = p.recvall()
-                count += len(buf)
-
-                p.close()
-                context.log_level = 'info'
-
-                if count > best_count:
-                    best_count = count
-                    best_ch = ch
+                if nbytes > best:
+                    best = nbytes
                     break
-            
-            password[i] = best_ch
     
-    return "".join(password)
+    return assemble(payload)
 
 def discover_length():
-    last_instcount = 0
-    current_instcount = 0
-    current_length = 1
+    best = 0
+    payload = ["X"]
 
-    with log.progress("length") as l:
+    with log.progress("Finding password length") as l:
         while True:
-            l.status(f"trying {current_length} {'X' * current_length}")
+            l.status(f"trying {assemble(payload)}")
+            nbytes = get_side_channel_leakage(assemble(payload))
 
-            context.log_level = 'error'
-            p = process(args)
-
-            buf = p.recvuntil(b'syscall=0x0000003f, a0=0x00000000, a1=0x87ffff2f, a2=0x00000001')
-            current_instcount += len(buf)
-
-            p.sendline(b'X' * current_length)
-
-            buf = p.recvall()
-            current_instcount += len(buf)
-
-            p.close()
-            context.log_level = 'info'
-
-            if current_instcount < last_instcount:
-                return current_length - 1, last_instcount
+            if nbytes < best:
+                N = len(payload) - 1
+                l.success(f"{N}")
+                return N
             else:
-                last_instcount = current_instcount
-                current_instcount = 0
-                current_length += 1
+                payload.append("X")
+                best = nbytes
 
-length, count = discover_length()
-password = discover_password(length, count)
 
-log.info(password)
+if __name__ == "__main__":
+    password_length = discover_length()
+    password = discover_password(password_length)
+    log.info(f"password={password}")
+
+    p = process(['build/hackvm', 'build/puzzle1'])
+    p.interactive()    

@@ -1,8 +1,8 @@
 /*********************************************************************
-* Filename:   hackvm.c
+* Filename:   vm.c
 * Author:     Kosi Nwabueze (kosinw [at] mit [dot] edu)
 * Copyright:  2023
-* Details:    Implements CPU emulator for hackvm ctf challenges.
+* Details:    Implements CPU emulator for HackMIT X puzzle challenges.
 *********************************************************************/
 
 /*************************** HEADER FILES ***************************/
@@ -417,7 +417,7 @@ void vm_store_ex(struct vm_context *ctx, uint32_t addr, uint32_t sz, uint32_t v)
     }
 }
 
-uint32_t vm_print_flag(const char *ciphertext, unsigned int length, const char *key)
+uint32_t xxprint(const char *ciphertext, unsigned int length, const char *key)
 {
     uint8_t hash[SHA256_BLOCK_SIZE];
     uint8_t iv[AES256_BLOCKLEN];
@@ -455,7 +455,7 @@ uint32_t vm_handle_ecall(struct vm_context *ctx, uint32_t syscall, uint32_t a0, 
         case 63:        { return (uint32_t)read((int)a0, &ctx->memory[a1 - VM_RAM_BASE], (size_t)a2); }
         case 64:        { return (uint32_t)write((int)a0, &ctx->memory[a1 - VM_RAM_BASE], (size_t)a2); }
         case 93:        { exit((int)a0); }
-        case 0x1337:    { return vm_print_flag((const char *)&ctx->memory[a0 - VM_RAM_BASE], (unsigned int)a1, (const char *)&ctx->memory[a2 - VM_RAM_BASE]); }
+        case 27:        { return xxprint((const char *)&ctx->memory[a0 - VM_RAM_BASE], (unsigned int)a1, (const char *)&ctx->memory[a2 - VM_RAM_BASE]); }
         default:        { VM_TRACE_ERROR("unknown syscall number"); exit(1); }
     }
 

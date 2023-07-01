@@ -1,7 +1,7 @@
 #define SYS_read            63
 #define SYS_write           64
 #define SYS_exit            93
-#define SYS_print_flag      0x1337
+#define SYS_xxprint         27
 
 .global read
 read:
@@ -21,8 +21,8 @@ exit:
     ecall
     ret
 
-.global print_flag
-print_flag:
-    li a7, SYS_print_flag
+.global xxprint
+xxprint:
+    li a7, SYS_xxprint
     ecall
     ret

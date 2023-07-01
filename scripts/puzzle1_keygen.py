@@ -10,8 +10,8 @@ import ctypes
 context.endian = 'little'
 context.signed = 'unsigned'
 
-KEY  = b"N0T-TH3-F1R5T-T1M1NG-S1D3-CH4NN3L-4TT4CK-PUZZL3"
-FLAG = b"hack{in5tructi0n_s3ts_w4nt_t0_b3_fr33_18052010}"
+KEY  = b"hack{in5tructi0n_s3ts_w4nt_t0_b3_fr33_18052010}"
+FLAG = b"76202dc7bf6cd3fafe1fbcaba89cad47b225ffda5261b70b41960f7d67dd6f7"
 
 def murmur_scramble(k):
     k = ctypes.c_uint32(0xcc9e2d51 * k).value
@@ -98,3 +98,5 @@ iv, ciphertext, key = encrypt_flag()
 print(f"key: {key.hex()}\nciphertext: {ciphertext.hex()}\niv: {iv.hex()}")
 print(f"const char password[] = {c_array(result)};")
 print(f"const char ciphertext[] = {c_array(iv + ciphertext)};")
+print("")
+print(f"#define KEY_LEN {len(KEY)}")

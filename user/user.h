@@ -12,7 +12,7 @@ typedef unsigned long long  uint64_t;
 int exit(int) __attribute__((noreturn));
 int write(int, const void*, int);
 int read(int, void*, int);
-int print_flag(const char*, size_t, const char*);
+int xxprint(const char*, size_t, const char*);
 
 // ulib.c
 void fprintf(int, const char*, ...);

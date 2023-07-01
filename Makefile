@@ -16,10 +16,10 @@ RELEASE_FLAGS	:= -O1 -DNDEBUG -static -s -fno-stack-protector
 .PHONY: 	release clean debug all puzzles keygen1 handout
 all: 		handout
 
-$(RELEASE_TARGET): hackvm.c
+$(RELEASE_TARGET): vm.c
 	musl-gcc -o $@ $^ -Wall -Werror -std=gnu11 $(RELEASE_FLAGS)
 
-$(DEBUG_TARGET): hackvm.c
+$(DEBUG_TARGET): vm.c
 	gcc -o $@ $^ -Wall -Werror -std=gnu11 $(DEBUG_FLAGS)
 
 ##########################################
@@ -35,8 +35,8 @@ OBJDUMP		:= riscv32-unknown-elf-objdump
 STRIP		:= riscv32-unknown-elf-strip
 ELFEDIT		:= riscv32-unknown-elf-elfedit
 
-CFLAGS		:= -Wall -Werror -O2 -fno-inline -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -I. -mno-relax
-SFLAGS		:= -s --remove-section .riscv.attributes --remove-section .comment
+CFLAGS		:= -Wall -Werror -O1 -fno-inline -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -I. -mno-relax
+SFLAGS		:= -d --remove-section .riscv.attributes --remove-section .comment
 
 UTARGET		:= $(BUILD_DIR)/example $(BUILD_DIR)/puzzle1
 ULIB		:= $(BUILD_DIR)/$(O)/usys.o $(BUILD_DIR)/$(O)/ulib.o
