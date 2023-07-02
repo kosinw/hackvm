@@ -268,7 +268,7 @@ bool parse_args(int argc, char **argv)
 {
     DEFINE_XOR_STRING(s_help, "--help", 6, 0xe4);
     DEFINE_XOR_STRING(s_trace, "--trace", 7, 0x93);
-    DEFINE_XOR_STRING(s_dump, "--dump-registers", 16, 0x2f);
+    DEFINE_XOR_STRING(s_dump, "--regs", 6, 0x46);
     DEFINE_XOR_STRING(s_unknown_arg, "unknown argument \"%s\"\n", 22, 0xe4);
 
     for (int i = 1; i < argc; ++i) {
@@ -677,10 +677,12 @@ void exit_routine(void)
 {
     if (opt_dump_registers)
     {
+        opt_trace = true;
         for (int i = 0; i < 32; i++)
         {
             VM_TRACE_INFO("x%d=0x%08x", i, ctx.registers[i]);
         }
+        opt_trace = false;
     }
 }
 

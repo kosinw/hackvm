@@ -10,7 +10,7 @@ context.endian = 'little'
 context.signed = 'unsigned'
 
 KEY  = b"hack{in5tructi0n_s3ts_w4nt_t0_b3_fr33_18052010}"
-FLAG = b"76202dc7bf6cd3fafe1fbcaba89cad47b225ffda5261b70b41960f7d67dd6f7"
+FLAG = b"076202dc7bf6cd3fafe1fbcaba89cad47b225ffda5261b70b41960f7d67dd6f7"
 
 def murmur_scramble(k):
     k = ctypes.c_uint32(0xcc9e2d51 * k).value
@@ -31,15 +31,15 @@ def murmur3(key, seed):
         h = ctypes.c_uint32((h << 13) | (h >> 19)).value
         h = ctypes.c_uint32(h * 5 +  0xe6546b64).value
         i -= 1
-    
+
     k = 0
     i = l & 3
-    
+
     while i != 0:
         k = ctypes.c_uint32(k << 8).value
         k = ctypes.c_uint32(k | u8(key[i - 1:i])).value
         i -= 1
-    
+
     h = ctypes.c_uint32(h ^ murmur_scramble(k)).value
     h = h ^ l
     h = h ^ (h >> 16)
@@ -76,7 +76,7 @@ def hash_password_key():
         d = ctypes.c_uint32(ctypes.c_uint64(c * 0xe984385).value >> 11).value
         e = ctypes.c_uint32((d << 14) | (d >> 18)).value
         result.extend(p32(e))
-    
+
     return result
 
 def encrypt_flag():

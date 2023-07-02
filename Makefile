@@ -12,13 +12,14 @@ RELEASE_TARGET 	:= $(BUILD_DIR)/vm
 DEBUG_TARGET	:= $(BUILD_DIR)/vm_debug
 
 DEBUG_FLAGS		:= -g3 -ggdb -DDEBUG -O0 -fsanitize=address,leak
-RELEASE_FLAGS	:= -O2 -DNDEBUG -s -fno-stack-protector
+RELEASE_FLAGS	:= -O1 -DNDEBUG -fno-stack-protector -static
 
 .PHONY: 	release clean debug all puzzles handout
-all: 		handout debug puzzles
+all: 		handout debug release puzzles
 
 $(RELEASE_TARGET): vm.c
-	gcc -o $@ $^ -Wall -Werror -std=gnu11 $(RELEASE_FLAGS)
+	musl-gcc -o $@ $^ -Wall -Werror -std=gnu11 $(RELEASE_FLAGS)
+	strip --discard-all $(shell cat symbols.txt | awk '{print "--strip-symbol=" $$1}') $@
 
 $(DEBUG_TARGET): vm.c
 	gcc -o $@ $^ -Wall -Werror -std=gnu11 $(DEBUG_FLAGS)

@@ -4,11 +4,7 @@ from Crypto.Hash import SHA256
 from Crypto.Random import get_random_bytes
 
 KEY     = b"hack{5olv1ng_sy5t3ms_of_c0n5tra1nt5_f0r_fun_4nd_pr0f1t_08111996}"
-FLAG    = b"cfe1dd0d044f525180bb3cb11f8fa9b2e5dc59408cba908ea0e807980202b82"
-
-@dataclass
-class Constraint:
-    pass
+FLAG    = b"0cfe1dd0d044f525180bb3cb11f8fa9b2e5dc59408cba908ea0e807980202b82"
 
 def generate_ciphertext():
     H = SHA256.new()
