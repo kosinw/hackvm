@@ -8,17 +8,17 @@ SCRIPTS_DIR		:= scripts
 
 HANDOUTS		:= $(HANDOUT_DIR)/hackvm.tar.gz $(HANDOUT_DIR)/vmhack.tar.gz
 
-RELEASE_TARGET 	:= $(BUILD_DIR)/hackvm
-DEBUG_TARGET	:= $(BUILD_DIR)/hackvm_debug
+RELEASE_TARGET 	:= $(BUILD_DIR)/vm
+DEBUG_TARGET	:= $(BUILD_DIR)/vm_debug
 
 DEBUG_FLAGS		:= -g3 -ggdb -DDEBUG -O0 -fsanitize=address,leak
-RELEASE_FLAGS	:= -O2 -DNDEBUG -static -fno-stack-protector
+RELEASE_FLAGS	:= -O2 -DNDEBUG -s -fno-stack-protector
 
 .PHONY: 	release clean debug all puzzles handout
 all: 		handout debug puzzles
 
 $(RELEASE_TARGET): vm.c
-	musl-gcc -o $@ $^ -Wall -Werror -std=gnu11 $(RELEASE_FLAGS)
+	gcc -o $@ $^ -Wall -Werror -std=gnu11 $(RELEASE_FLAGS)
 
 $(DEBUG_TARGET): vm.c
 	gcc -o $@ $^ -Wall -Werror -std=gnu11 $(DEBUG_FLAGS)
@@ -71,10 +71,10 @@ $(BUILD_DIR)/%: $(BUILD_DIR)/$(O)/%.o $(ULIB)
 ##########################################
 
 $(HANDOUT_DIR)/hackvm.tar.gz: $(RELEASE_TARGET) $(BUILD_DIR)/puzzle1
-	cd build && tar -cvzf ../$@ hackvm puzzle1
+	cd build && tar -cvzf ../$@ vm puzzle1
 
 $(HANDOUT_DIR)/vmhack.tar.gz: $(RELEASE_TARGET) $(BUILD_DIR)/puzzle2
-	cd build && cp hackvm vmhack && tar -cvzf ../$@ vmhack puzzle2
+	cd build && tar -cvzf ../$@ vm puzzle2
 
 release: 	$(RELEASE_TARGET)
 debug: 		$(DEBUG_TARGET)

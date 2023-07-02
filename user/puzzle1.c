@@ -91,24 +91,27 @@ int memcmp(char *plaintext, const char *ciphertext, size_t n)
 void win(char *password)
 {
     puts("[" ANSI_GREEN "*" ANSI_CLEAR "] " "logging in as user timthebeaver...");
-    puts("[" ANSI_RED "$" ANSI_CLEAR "] " "cat flag.txt");
+    printf("[" ANSI_RED "$" ANSI_CLEAR "] " "printing flag.txt: ");
     xxprint(ciphertext, sizeof(ciphertext), password);
     puts("");
-    puts("[" ANSI_GREEN "*" ANSI_CLEAR "] " "now shutting down computer...");
+    puts("[" ANSI_GREEN "*" ANSI_CLEAR "] " "thank you for playing...");
 }
 
 int main(void)
 {
     char buf[128];
 
+
+
     puts("");
     puts("          .=\"   \"=._.---.");
-    puts("        .\"         c ' Y'`p               welcome to tim the beaver's");
+    puts("        .\"         c ' Y'`p                 welcome to the BEAVER");
     puts("       /   ,       `.  w_/             reduced instruction set computer");
-    puts("       |   '-.   /     / ");
+    puts("   jgs |   '-.   /     / ");
     puts(" _,..._|      )_-\\ \\_=.");
     puts("`-....-'`------)))`=-'\"`'\"");
     puts("");
+    puts("[" ANSI_GREEN "*" ANSI_CLEAR "] remember to submit the " ANSI_BOLD "flag" ANSI_CLEAR ", not the passphrase on the command center!" ANSI_CLEAR);
     printf("[" ANSI_GREEN "*" ANSI_CLEAR "] "  "please enter the passphrase: ");
 
     gets(buf, 128);

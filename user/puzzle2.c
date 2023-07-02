@@ -12,15 +12,45 @@ const char ciphertext[] = {0x2d, 0x46, 0xed, 0xe3, 0xdf, 0x39, 0x9e, 0x9c, 0xd4,
 
 void win(char *password)
 {
-    puts("[" ANSI_GREEN "*" ANSI_CLEAR "] " "congrats, you found the correct passphrase!");
-    printf("[" ANSI_RED "$" ANSI_CLEAR "] " "here is the flag: ");
+    puts("[" ANSI_GREEN "*" ANSI_CLEAR "] " "drats, i guess i owe you a flag now!");
+    printf("[" ANSI_GREEN "*" ANSI_CLEAR "] " "here is the flag: ");
     xxprint(ciphertext, sizeof(ciphertext), password);
     puts("");
+    puts("[" ANSI_GREEN "*" ANSI_CLEAR "] " "also have a beaver for your troubles: ");
+
+    puts("\n"
+"                   |    :|\n"
+"                   |     |\n"
+"                   |    .|\n"
+"               ____|    .|\n"
+"             .' .  ).   ,'\n"
+"           .' c   '7 ) (\n"
+"       _.-\"       |.'   `.\n"
+"     .'           \"8E   :|\n"
+"     |          _}\"\"    :|\n"
+"     |         (   |     |\n"
+"    .'         )   |    :|\n"
+".odCG8o_.---.__8E  |    .|    \n"
+"`Y8MMP\"\"       \"\"  `-...-'   cgmm\n");
+
 }
 
 int main(void)
 {
-    printf("[" ANSI_GREEN "*" ANSI_CLEAR "] " "please input passphrase: ");
+    puts("\n"
+" ██╗   ██╗███╗   ███╗██╗  ██╗ █████╗  ██████╗██╗  ██╗\n"
+" ██║   ██║████╗ ████║██║  ██║██╔══██╗██╔════╝██║ ██╔╝\n"
+" ██║   ██║██╔████╔██║███████║███████║██║     █████╔╝ \n"
+" ╚██╗ ██╔╝██║╚██╔╝██║██╔══██║██╔══██║██║     ██╔═██╗ \n"
+"  ╚████╔╝ ██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╗██║  ██╗\n"
+"   ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝\n");
+
+
+    puts("~ the state-of-the-art passphrase checker powered by AI and beavers (i think?) ~");
+    puts("  we use machine learning models or something to update the program as it executes ");
+    puts("");
+    puts("[" ANSI_GREEN "*" ANSI_CLEAR "] remember to submit the " ANSI_BOLD "flag" ANSI_CLEAR ", not the passphrase on the command center!" ANSI_CLEAR);
+    printf("[" ANSI_GREEN "*" ANSI_CLEAR "] " "enter passphrase: ");
 
     char buf[128];
     gets(buf, 128);
