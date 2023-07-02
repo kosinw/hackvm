@@ -112,11 +112,11 @@
     do {                                            \
         if (addr < VM_RAM_BASE) {                   \
             VM_TRACE_ERROR("memory out of bounds access, address=0x%08x", addr); \
-            return false;                           \
+            exit(1);                                \
         }                                           \
         if (addr + sz > VM_RAM_STOP) {              \
             VM_TRACE_ERROR("memory out of bounds access, address=0x%08x", addr); \
-            return false;                           \
+            exit(1);                                \
         }                                           \
     } while (0)                                     \
 
@@ -253,6 +253,7 @@ bool vm_store_word(struct vm_context *ctx, uint32_t addr, uint32_t val);
 
 const char *opt_filename = NULL;
 bool opt_trace = false;
+bool opt_dump_registers = false;
 
 /*********************** FUNCTION DEFINITIONS **********************/
 
@@ -267,6 +268,7 @@ bool parse_args(int argc, char **argv)
 {
     DEFINE_XOR_STRING(s_help, "--help", 6, 0xe4);
     DEFINE_XOR_STRING(s_trace, "--trace", 7, 0x93);
+    DEFINE_XOR_STRING(s_dump, "--dump-registers", 16, 0x2f);
     DEFINE_XOR_STRING(s_unknown_arg, "unknown argument \"%s\"\n", 22, 0xe4);
 
     for (int i = 1; i < argc; ++i) {
@@ -278,6 +280,11 @@ bool parse_args(int argc, char **argv)
 
             else if (strcmp(arg, s_trace) == 0) { // secret option to help solve chall
                 opt_trace = true;
+                continue;
+            }
+
+            else if (strcmp(arg, s_dump) == 0) {
+                opt_dump_registers = true;
                 continue;
             }
 
@@ -666,11 +673,24 @@ bool vm_store_word(struct vm_context *ctx, uint32_t addr, uint32_t val)
     return true;
 }
 
+void exit_routine(void)
+{
+    if (opt_dump_registers)
+    {
+        for (int i = 0; i < 32; i++)
+        {
+            VM_TRACE_INFO("x%d=0x%08x", i, ctx.registers[i]);
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
     setbuf(stdout, NULL);
     setbuf(stdin, NULL);
     setbuf(stderr, NULL);
+
+    atexit(exit_routine);
 
     if (!parse_args(argc, argv)) {
         fprintf(stderr, "usage: %s [options] <filename>\n", argv[0]);

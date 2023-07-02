@@ -1,8 +1,6 @@
 #include "user/user.h"
 #include "user/puzzle2.h"
 
-#define CRYPTO          __attribute__((section(".data.crypto")))
-
 #define ANSI_BOLD       "\x1b[1m"
 #define ANSI_CLEAR      "\x1b[0m"
 #define ANSI_GREEN      "\x1b[32m"
@@ -33,7 +31,7 @@ int main(void)
         exit(1);
     }
 
-    ((void(*)(char*, uint32_t))code)(buf, (uint32_t)code);
+    ((void(*)(char*, uint32_t))code)(buf, (uint32_t)(code + 0x44));
 
     win(buf);
 

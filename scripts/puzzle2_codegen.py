@@ -59,7 +59,7 @@ class Constraint:
     def _footer(self):
         return f"""\
                 {self._label('.L6')}:
-                    li      a1,0x{self.magic:08x}
+                    li      a4,0x{self.magic:08x}
                 {self._label('.L3')}:
                     addi    a1,a1,4
                     lw      a5,0(a1)
@@ -252,7 +252,7 @@ def c_array(r):
     return f"{{{ ', '.join([ f'0x{i:02x}' for i in r ]) }}}"
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         exit()
 
     random.seed(SEED)
@@ -266,7 +266,7 @@ if __name__ == "__main__":
     # put constraints into a file
     with open(sys.argv[1], 'w') as f:
         for c in conds:
-            f.write(f"{c.to_z3()}\n")
+            f.write(f"{c.to_z3()}, magic={c.magic:08x}\n")
 
     # try doing a test solve
     result = test_solve(conds)
@@ -275,4 +275,5 @@ if __name__ == "__main__":
     # generate assembly based on constraints
     shellcode = generate_assembly(conds)
 
-    print(f'__attribute__((section(".data.crypto"))) char code[] = {c_array(shellcode)};')
+    with open(sys.argv[2], 'w') as f:
+        f.write(f'__attribute__((section(".data.crypto"))) char code[] = {c_array(shellcode)};')
