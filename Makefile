@@ -4,6 +4,7 @@
 
 BUILD_DIR 		:= build
 HANDOUT_DIR		:= handout
+SCRIPTS_DIR		:= scripts
 
 HANDOUTS		:= $(HANDOUT_DIR)/hackvm.tar.gz $(HANDOUT_DIR)/vmhack.tar.gz
 
@@ -13,7 +14,7 @@ DEBUG_TARGET	:= $(BUILD_DIR)/hackvm_debug
 DEBUG_FLAGS		:= -g3 -ggdb -DDEBUG -O0 -fsanitize=address,leak
 RELEASE_FLAGS	:= -O2 -DNDEBUG -static -fno-stack-protector
 
-.PHONY: 	release clean debug all puzzles keygen1 handout
+.PHONY: 	release clean debug all puzzles handout
 all: 		handout debug puzzles
 
 $(RELEASE_TARGET): vm.c
@@ -45,6 +46,11 @@ $(BUILD_DIR)/$(O)/%.o: $(U)/%.c
 	@mkdir -p $(@D)
 	$(CC) -o $@ -c $^ $(CFLAGS)
 
+$(U)/puzzle2.c: $(U)/puzzle2.h
+
+$(U)/puzzle2.h:
+	$(SCRIPTS_DIR)/puzzle2_codegen.py $(BUILD_DIR)/$(O)/constraints $@
+
 $(BUILD_DIR)/$(O)/%.o: $(U)/%.S
 	@mkdir -p $(@D)
 	$(CC) -o $@ -c $^ $(CFLAGS)
@@ -75,9 +81,7 @@ debug: 		$(DEBUG_TARGET)
 puzzles:	$(UTARGET)
 handout: 	$(HANDOUTS)
 
-keygen1:
-	scripts/puzzle1_keygen.py
-
 clean:
 	-rm -rf $(BUILD_DIR)/*
 	-rm -rf $(HANDOUT_DIR)/*
+	-rm $(U)/puzzle2.h

@@ -61,8 +61,8 @@ class Constraint:
                 {self._label('.L6')}:
                     li      a4,0x{self.magic:08x}
                 {self._label('.L3')}:
+                    lw      a5,4(a1)
                     addi    a1,a1,4
-                    lw      a5,0(a1)
                     xor     a3,a5,a4
                     sw      a3,0(a1)
                     bne     a5,a4,{self._label('.L3')}
@@ -80,6 +80,7 @@ class Constraint:
                         lbu     a5,{a}(a0)
                         lbu     a3,{b}(a0)
                         li      a4,{KEY[a] + KEY[b]}
+                        mv      a2,a1
                         add     a5,a5,a3
                         beq     a5,a4,{self._label('.L6')}
                         li      a7, 93
@@ -91,6 +92,7 @@ class Constraint:
                         lbu     a5,{a}(a0)
                         lbu     a3,{b}(a0)
                         li      a4,{KEY[a] - KEY[b]}
+                        mv      a2,a1
                         sub     a5,a5,a3
                         beq     a5,a4,{self._label('.L6')}
                         li      a7, 93
@@ -101,6 +103,7 @@ class Constraint:
                         lbu     a5,{a}(a0)
                         lbu     a3,{b}(a0)
                         li      a4,{KEY[a] ^ KEY[b]}
+                        mv      a2,a1
                         xor     a5,a5,a3
                         beq     a5,a4,{self._label('.L6')}
                         li      a7, 93
@@ -111,6 +114,7 @@ class Constraint:
                         lbu     a5,{a}(a0)
                         lbu     a3,{b}(a0)
                         li      a4,{KEY[a] & KEY[b]}
+                        mv      a2,a1
                         and     a5,a5,a3
                         beq     a5,a4,{self._label('.L6')}
                         li      a7, 93
@@ -121,6 +125,7 @@ class Constraint:
                         lbu     a5,{a}(a0)
                         lbu     a3,{b}(a0)
                         li      a4,{KEY[a] | KEY[b]}
+                        mv      a2,a1
                         or      a5,a5,a3
                         beq     a5,a4,{self._label('.L6')}
                         li      a7, 93
