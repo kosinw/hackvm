@@ -15,7 +15,7 @@ def assemble(arr):
 def get_side_channel_leakage(payload):
     context.log_level = 'error'
     p, f = spawn()
-    p.recvuntil(b"please enter passphrase: ")
+    p.recvuntil(b"please enter the passphrase: ")
     p.sendline(payload.encode())
     p.recvall()
     p.close()

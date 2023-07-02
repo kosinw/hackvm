@@ -5,7 +5,7 @@
 BUILD_DIR 		:= build
 HANDOUT_DIR		:= handout
 
-HANDOUTS		:= $(HANDOUT_DIR)/hackvm.tar.gz
+HANDOUTS		:= $(HANDOUT_DIR)/hackvm.tar.gz $(HANDOUT_DIR)/vmhack.tar.gz
 
 RELEASE_TARGET 	:= $(BUILD_DIR)/hackvm
 DEBUG_TARGET	:= $(BUILD_DIR)/hackvm_debug
@@ -14,7 +14,7 @@ DEBUG_FLAGS		:= -g3 -ggdb -DDEBUG -O0 -fsanitize=address,leak
 RELEASE_FLAGS	:= -O1 -DNDEBUG -static -s -fno-stack-protector
 
 .PHONY: 	release clean debug all puzzles keygen1 handout
-all: 		handout
+all: 		handout debug puzzles
 
 $(RELEASE_TARGET): vm.c
 	musl-gcc -o $@ $^ -Wall -Werror -std=gnu11 $(RELEASE_FLAGS)
@@ -38,7 +38,7 @@ ELFEDIT		:= riscv32-unknown-elf-elfedit
 CFLAGS		:= -Wall -Werror -O1 -fno-inline -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -I. -mno-relax
 SFLAGS		:= -d --remove-section .riscv.attributes --remove-section .comment
 
-UTARGET		:= $(BUILD_DIR)/example $(BUILD_DIR)/puzzle1
+UTARGET		:= $(BUILD_DIR)/example $(BUILD_DIR)/puzzle1 $(BUILD_DIR)/puzzle2
 ULIB		:= $(BUILD_DIR)/$(O)/usys.o $(BUILD_DIR)/$(O)/ulib.o
 
 $(BUILD_DIR)/$(O)/%.o: $(U)/%.c
@@ -66,6 +66,9 @@ $(BUILD_DIR)/%: $(BUILD_DIR)/$(O)/%.o $(ULIB)
 
 $(HANDOUT_DIR)/hackvm.tar.gz: $(RELEASE_TARGET) $(BUILD_DIR)/puzzle1
 	cd build && tar -cvzf ../$@ hackvm puzzle1
+
+$(HANDOUT_DIR)/vmhack.tar.gz: $(RELEASE_TARGET) $(BUILD_DIR)/puzzle2
+	cd build && cp hackvm vmhack && tar -cvzf ../$@ vmhack puzzle2
 
 release: 	$(RELEASE_TARGET)
 debug: 		$(DEBUG_TARGET)

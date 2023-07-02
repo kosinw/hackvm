@@ -33,6 +33,4 @@ SECTIONS
         /* . = ALIGN(16); */
         *(.bss .bss.*)
     }
-
-    PROVIDE(__heap_start = .);
 }

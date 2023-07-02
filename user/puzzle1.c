@@ -15,7 +15,7 @@ const char ciphertext[] = {0x3c, 0x6c, 0xf9, 0x6, 0xaf, 0xe1, 0x4d, 0x53, 0x7e, 
 
 #define KEY_LEN 47
 
-uint32_t scramble(uint32_t k) 
+uint32_t scramble(uint32_t k)
 {
     k *= 0xcc9e2d51;
     k = (k << 15) | (k >> 17);
@@ -25,7 +25,7 @@ uint32_t scramble(uint32_t k)
 
 uint32_t hash(const uint8_t* key, size_t len, uint32_t seed)
 {
-	uint32_t h = seed;
+    uint32_t h = seed;
     uint32_t k;
     for (uint32_t i = len >> 2; i; i--) {
         memcpy(&k, key, sizeof(uint32_t));
@@ -109,11 +109,11 @@ int main(void)
     puts(" _,..._|      )_-\\ \\_=.");
     puts("`-....-'`------)))`=-'\"`'\"");
     puts("");
-    printf("[" ANSI_GREEN "*" ANSI_CLEAR "] "  "please enter passphrase: ");
+    printf("[" ANSI_GREEN "*" ANSI_CLEAR "] "  "please enter the passphrase: ");
 
     gets(buf, 128);
     buf[strlen(buf) - 1] = '\0';
-    
+
     if (strlen(buf) != KEY_LEN || memcmp(buf, password, KEY_LEN) != 0)
         lose();
 

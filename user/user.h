@@ -20,6 +20,4 @@ void printf(const char*, ...);
 void puts(const char *);
 char* gets(char*, int max);
 uint strlen(const char*);
-void* memset(void*, int, uint);
-void* malloc(uint);
 void *memcpy(void *, const void *, uint);

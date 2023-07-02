@@ -1,9 +1,9 @@
 #include "user/user.h"
 #include <stdarg.h>
 
-extern unsigned char __heap_start;
+#define ENTRYPOINT __attribute__((section(".text.entry")))
 
-__attribute__((section(".text.entry"))) void _main() 
+ENTRYPOINT void _main() 
 {
   extern int main();
   main();
@@ -17,17 +17,6 @@ uint strlen(const char *s)
   for(n = 0; s[n]; n++)
     ;
   return n;
-}
-
-void*
-memset(void *dst, int c, uint n)
-{
-  char *cdst = (char *) dst;
-  int i;
-  for(i = 0; i < n; i++){
-    cdst[i] = c;
-  }
-  return dst;
 }
 
 char* gets(char *buf, int max)
@@ -173,12 +162,4 @@ void puts(const char *fmt)
 {
   write(1, fmt, strlen(fmt));
   putc(1, '\n');
-}
-
-void* malloc(uint nbytes)
-{
-    static void* heap_ptr = &__heap_start;
-    void *current_ptr = heap_ptr;
-    heap_ptr += nbytes;
-    return current_ptr;
 }

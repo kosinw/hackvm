@@ -2,7 +2,7 @@
 * Filename:   vm.c
 * Author:     Kosi Nwabueze (kosinw [at] mit [dot] edu)
 * Copyright:  2023
-* Details:    Implements CPU emulator for HackMIT X puzzle challenges.
+* Details:    Implements CPU emulator for HackMIT 2023 puzzle challenges.
 *********************************************************************/
 
 /*************************** HEADER FILES ***************************/

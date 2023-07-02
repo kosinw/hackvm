@@ -430,7 +430,7 @@ void aes256_decrypt(struct aes256_state* ctx, uint8_t buf[], size_t length)
       {
 	/* inc will overflow */
         if (ctx->Iv[bi] == 255)
-	{
+	      {
           ctx->Iv[bi] = 0;
           continue;
         } 

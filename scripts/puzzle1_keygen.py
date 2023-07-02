@@ -2,7 +2,6 @@
 
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
-from Crypto.Util import strxor
 from Crypto.Random import get_random_bytes
 from pwn import *
 import ctypes
