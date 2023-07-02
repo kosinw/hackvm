@@ -14,7 +14,7 @@ DEBUG_TARGET	:= $(BUILD_DIR)/vm_debug
 DEBUG_FLAGS		:= -g3 -ggdb -DDEBUG -O0 -fsanitize=address,leak
 RELEASE_FLAGS	:= -O1 -DNDEBUG -fno-stack-protector -static
 
-.PHONY: 	release clean debug all puzzles handout
+.PHONY: 	release clean debug all puzzles handout web
 all: 		handout debug release puzzles
 
 $(RELEASE_TARGET): vm.c
@@ -82,7 +82,12 @@ debug: 		$(DEBUG_TARGET)
 puzzles:	$(UTARGET)
 handout: 	$(HANDOUTS)
 
+web: handout
+	web/puzzle1.sh
+	web/puzzle2.sh
+
 clean:
 	-rm -rf $(BUILD_DIR)/*
 	-rm -rf $(HANDOUT_DIR)/*
 	-rm $(U)/puzzle2.h
+	-rm web/vm-core*
