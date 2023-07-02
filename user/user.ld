@@ -20,6 +20,11 @@ SECTIONS
         *(.rodata .rodata.*)
     }
 
+    .crypto : {
+        . = ALIGN(32);
+        *(.data.crypto)
+    }
+
     .data : {
         /* . = ALIGN(16); */
         *(.sdata .sdata.*) /* do not need to distinguish this from .data */

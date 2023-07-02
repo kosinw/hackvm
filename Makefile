@@ -11,7 +11,7 @@ RELEASE_TARGET 	:= $(BUILD_DIR)/hackvm
 DEBUG_TARGET	:= $(BUILD_DIR)/hackvm_debug
 
 DEBUG_FLAGS		:= -g3 -ggdb -DDEBUG -O0 -fsanitize=address,leak
-RELEASE_FLAGS	:= -O1 -DNDEBUG -static -s -fno-stack-protector
+RELEASE_FLAGS	:= -O2 -DNDEBUG -static -fno-stack-protector
 
 .PHONY: 	release clean debug all puzzles keygen1 handout
 all: 		handout debug puzzles

@@ -3,12 +3,8 @@ from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 from Crypto.Random import get_random_bytes
 
-from dataclasses import dataclass
-import subprocess
-import ctypes
-
-KEY  = b"hack{5olv1ng_sy5t3ms_of_c0n5tra1nt5_f0r_fun_4nd_pr0f1t_08111996}"
-FLAG = b"cfe1dd0d044f525180bb3cb11f8fa9b2e5dc59408cba908ea0e807980202b82"
+KEY     = b"hack{5olv1ng_sy5t3ms_of_c0n5tra1nt5_f0r_fun_4nd_pr0f1t_08111996}"
+FLAG    = b"cfe1dd0d044f525180bb3cb11f8fa9b2e5dc59408cba908ea0e807980202b82"
 
 @dataclass
 class Constraint:
@@ -26,24 +22,7 @@ def generate_ciphertext():
 def c_array(r):
     return f"{{{ ', '.join([hex(i) for i in r]) }}}"
 
-def assemble(assembly_code):
-    command = f'rasm2 -a riscv -b 32 -f - << EOF\n{assembly_code}\nEOF'
-    result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
-    machine_code = bytes.fromhex(result.stdout.strip())
-    return machine_code
-
-# stepN(char *password)
-assembly = """
-step0:
-    xor ra, sp, gp
-    add tp, ra, sp
-    beq ra, tp, good
-bad:
-    mv a0, 1
-    addi x0, x0, 0
-good:
-    ret
-end0:
-"""
-
-print(assemble(assembly))
+iv, ciphertext, key = generate_ciphertext()
+print(f"key: {key.hex()}\nciphertext: {ciphertext.hex()}\niv: {iv.hex()}")
+print(f"const char ciphertext[] = {c_array(iv + ciphertext)};")
+print(f"#define KEY_LEN {len(KEY)}")

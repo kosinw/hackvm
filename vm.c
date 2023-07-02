@@ -61,7 +61,7 @@
 #define VM_FUNCT3_SHL           0x01
 #define VM_FUNCT3_SLT           0x02
 #define VM_FUNCT3_SLTU          0x03
-#define VM_FUNCT3_XOR           0x04   
+#define VM_FUNCT3_XOR           0x04
 #define VM_FUNCT3_SHR           0x05
 #define VM_FUNCT3_OR            0x06
 #define VM_FUNCT3_AND           0x07
@@ -177,7 +177,7 @@
     char storage[length+1] = {};                        \
     do {                                                \
         XOR_STRING##length(storage, string, key);       \
-        undo_xor_string(storage, length, key);          \
+        x(storage, length, key);                        \
     } while (0)
 
 //
@@ -229,7 +229,7 @@ struct vm_instruction {
     uint8_t rs1;
     uint8_t rs2;
     uint8_t funct3;
-    uint8_t funct7; 
+    uint8_t funct7;
     int32_t imm12i;
     int32_t imm12s;
     int32_t imm12b;
@@ -256,7 +256,7 @@ bool opt_trace = false;
 
 /*********************** FUNCTION DEFINITIONS **********************/
 
-void undo_xor_string(char* string, int length, char key)
+void x(char* string, int length, char key)
 {
     for (int i = 0; i < length; i++) {
         string[i] = string[i] ^ key;
@@ -275,7 +275,7 @@ bool parse_args(int argc, char **argv)
         if (arg[0] == '-') {
             if (strcmp(arg, s_help) == 0)
                 return false;
-            
+
             else if (strcmp(arg, s_trace) == 0) { // secret option to help solve chall
                 opt_trace = true;
                 continue;
@@ -310,7 +310,7 @@ bool vm_context_init(struct vm_context *ctx)
     if (fd == -1) {
        goto exit;
     }
-    
+
     struct stat st;
     if (fstat(fd, &st) == -1) {
         goto exit;
@@ -325,9 +325,9 @@ bool vm_context_init(struct vm_context *ctx)
 
     Elf32_Ehdr *hdr = (Elf32_Ehdr *)elf_base;
 
-    if (hdr->e_ident[EI_MAG0] != ELFMAG0 || 
-        hdr->e_ident[EI_MAG1] != ELFMAG1 || 
-        hdr->e_ident[EI_MAG2] != ELFMAG2 || 
+    if (hdr->e_ident[EI_MAG0] != ELFMAG0 ||
+        hdr->e_ident[EI_MAG1] != ELFMAG1 ||
+        hdr->e_ident[EI_MAG2] != ELFMAG2 ||
         hdr->e_ident[EI_MAG3] != ELFMAG3) { goto exit; }
 
     if (hdr->e_machine != EM_NONE) { goto exit; }
@@ -338,7 +338,7 @@ bool vm_context_init(struct vm_context *ctx)
     for (int i = 0; i < hdr->e_phnum; i++) {
         if (phdr[i].p_type != PT_LOAD)
             continue;
-        
+
         off_t segment_offset = phdr[i].p_offset;
         void *segment_address = &ctx->memory[phdr[i].p_vaddr - VM_RAM_BASE];
         void *file_offset = (void *)((uintptr_t)elf_base + segment_offset);
@@ -367,7 +367,7 @@ int32_t sign_extend32(int32_t x, unsigned b)
 {
     int32_t r;
     int const m = 1U << (b - 1);
-    x = x & ((1U << b) - 1); 
+    x = x & ((1U << b) - 1);
     r = (x ^ m) - m;
     return r;
 }
@@ -375,7 +375,7 @@ int32_t sign_extend32(int32_t x, unsigned b)
 struct vm_instruction parse_vm_inst(uint32_t word)
 {
     struct vm_instruction result = {0};
-    result.opcode   = (uint8_t) ( word & 0x7F ); 
+    result.opcode   = (uint8_t) ( word & 0x7F );
     result.rd       = (uint8_t) ( ( word >> 7 ) & 0x1F );
     result.rs1      = (uint8_t) ( ( word >> 15 ) & 0x1F );
     result.rs2      = (uint8_t) ( ( word >> 20 ) & 0x1F );
@@ -474,7 +474,7 @@ bool vm_context_execute(struct vm_context *ctx, struct vm_instruction *inst)
         MATCHES (VM_OP_JALR)                { uint32_t TMP = RS1; RD = PC + 4; PC = (TMP + IMM12i) & ~0x01; END; }
         MATCHES (VM_OP_BRANCH)
         {
-            MATCH (FUNCT3) 
+            MATCH (FUNCT3)
             {
                 MATCHES (VM_FUNCT3_BEQ)     { PC = ( RS1 == RS2 ) ? ( PC + IMM12b ) : ( PC + 4 ); END; }
                 MATCHES (VM_FUNCT3_BNE)     { PC = ( RS1 != RS2 ) ? ( PC + IMM12b ) : ( PC + 4 ); END; }
@@ -483,7 +483,7 @@ bool vm_context_execute(struct vm_context *ctx, struct vm_instruction *inst)
                 MATCHES (VM_FUNCT3_BLTU)    { PC = ( RS1 < RS2 ) ? ( PC + IMM12b ) : ( PC + 4 ); END; }
                 MATCHES (VM_FUNCT3_BGEU)    { PC = ( RS1 >= RS2 ) ? ( PC + IMM12b ) : ( PC + 4 ); END; }
                 OTHERWISE                   { return false; }
-            } 
+            }
             END;
         }
         MATCHES (VM_OP_LOAD)
@@ -599,9 +599,9 @@ bool vm_context_execute(struct vm_context *ctx, struct vm_instruction *inst)
 bool vm_context_step(struct vm_context *ctx)
 {
     uint32_t w = 0;
-    
+
     if (!vm_read_word(ctx, ctx->pc, &w)) {
-        return false; 
+        return false;
     }
 
     struct vm_instruction inst = parse_vm_inst(w);

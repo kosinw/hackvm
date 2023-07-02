@@ -119,5 +119,5 @@ int main(void)
 
     win(buf);
 
-    return 1;
+    return 0;
 }
