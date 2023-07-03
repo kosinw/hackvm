@@ -337,7 +337,6 @@ bool vm_context_init(struct vm_context *ctx)
         hdr->e_ident[EI_MAG2] != ELFMAG2 ||
         hdr->e_ident[EI_MAG3] != ELFMAG3) { goto exit; }
 
-    if (hdr->e_machine != EM_NONE) { goto exit; }
     if (hdr->e_type != ET_EXEC) { goto exit; }
 
     Elf32_Phdr *phdr = (Elf32_Phdr *)((uintptr_t)elf_base + hdr->e_phoff);

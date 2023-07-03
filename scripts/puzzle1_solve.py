@@ -5,8 +5,8 @@ import os
 
 def spawn():
     f = tempfile.TemporaryFile('wb')
-    args = ['build/hackvm', '--trace', 'build/puzzle1']
-    p = process(args, stderr=f)
+    args = ['build/vm', '--trace', 'build/puzzle1']
+    p = process(args, stderr=f) # subprocess
     return p, f
 
 def assemble(arr):
@@ -39,13 +39,12 @@ def discover_password(length):
                 if nbytes > best:
                     best = nbytes
                     break
-    
+
     return assemble(payload)
 
 def discover_length():
     best = 0
     payload = ["X"]
-
     with log.progress("Finding password length") as l:
         while True:
             l.status(f"trying {assemble(payload)}")
@@ -66,4 +65,4 @@ if __name__ == "__main__":
     log.info(f"password={password}")
 
     p = process(['build/hackvm', 'build/puzzle1'])
-    p.interactive()    
+    p.interactive()

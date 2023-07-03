@@ -35,7 +35,6 @@ CC			:= riscv32-unknown-elf-gcc
 LD			:= riscv32-unknown-elf-ld
 OBJDUMP		:= riscv32-unknown-elf-objdump
 STRIP		:= riscv32-unknown-elf-strip
-ELFEDIT		:= riscv32-unknown-elf-elfedit
 
 CFLAGS		:= -Wall -Werror -O1 -fno-inline -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -I. -mno-relax
 SFLAGS		:= -d --remove-section .riscv.attributes --remove-section .comment
@@ -60,7 +59,6 @@ $(BUILD_DIR)/%: $(BUILD_DIR)/$(O)/%.o $(ULIB)
 	$(LD) -T $(U)/user.ld -o $@ $^
 	$(OBJDUMP) -S $@ > $(BUILD_DIR)/$(O)/$*.asm
 	$(STRIP) $(SFLAGS) $@
-	$(ELFEDIT) --output-mach none $@
 
 # Prevent deletion of intermediate files, e.g. cat.o, after first build, so
 # that disk image changes after first build are persistent until clean.
